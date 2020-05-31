@@ -130,7 +130,7 @@ def main():
     print('This suggests that there are significantly more "really bad trading days" than "really good trading days" indicating that bigger drops occur more frequently than ')
     print('bigger gains. On years with a high standard deviation of daily returns (eg. more volatile), namely 2015, 2016, and 2018, there is a significantly higher percentage of bad trading days ')
     print('compared to good ones: 3.17% vs 1.98%, 3.57% vs 0.79%, and 1.99% vs 0.8%. On years with high positive average returns, namely 2017, there is a higher percentage of "really good trading days" than "really bad trading days", but not by as much ')
-    print('as the difference in 2015, 2016, and 2018. It seems as though generally, there are a higher percentage of big drops than big gains overall, and this is exacerbated by increased volatility (sigma) which deviates with majorly bullish years.')
+    print('as the converse difference in 2015, 2016, and 2018. It seems as though generally, there are a higher percentage of big drops than big gains overall, and this is exacerbated by increased volatility (sigma) which deviates with majorly bullish years.')
 
 if __name__ == "__main__":
     main()

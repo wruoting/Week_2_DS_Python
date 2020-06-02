@@ -18,8 +18,9 @@ ticker_file = os.path.join('./' + ticker + '.csv')
 def list_all_open_days_by_cent(df, year_start, year_end):
     """
     df: pd dataframe. Data of interest
-    year: int. The year of calculating positive and negative returns
-    returns: Tuple with positive and negative days
+    year_start: int/string. The start year
+    year_end: int/string. The end year 
+    returns: Series with unique sort day counts
     """
     year_start = str(year_start)
     year_end = str(year_end)
@@ -97,6 +98,29 @@ def root_mean_squared_error(actual_vector, prediction_vector):
     rmse = np.sqrt(mean_calculation)
     return np.round(rmse, 5)
 
+def create_table_by_years(df, start_year, end_year):
+    """
+    df: pd dataframe. Data of interest
+    year_start: int/string. The start year
+    year_end: int/string. The end year 
+    returns: Table with years and corresponding method of error
+    """
+    year_range = range(start_year, end_year+1)
+    prediction_vector = np.full(10, 0.1)
+    dict_of_years_and_calculations = {}
+    for year in year_range:
+        frequencies = list_all_open_days_by_cent(df, year, year)
+        # Create the actual vector
+        actual_vector_values = np.array(frequencies[1:].sort_index())
+        sum_vector = np.sum(actual_vector_values)
+        # Convert this vector into percentages
+        actual_vector_percentages = np.divide(actual_vector_values, sum_vector)
+        dict_of_years_and_calculations[year] = np.array([max_absolute_error(actual_vector_percentages, prediction_vector),
+            median_absolute_error(actual_vector_percentages, prediction_vector),
+            mean_absolute_error(actual_vector_percentages, prediction_vector),
+            root_mean_squared_error(actual_vector_percentages, prediction_vector)])
+   
+    return pd.DataFrame.from_dict(dict_of_years_and_calculations, orient='index', columns = ['Max Absolute Error', 'Median Absolute Error', 'Mean Absolute Error', 'Root Mean Squared Error']).T
 
 def main():
     df = pd.read_csv(ticker_file)
@@ -112,12 +136,13 @@ def main():
 
     # Print the frequencies table
     print(frequencies)
+    print('------------------------------------------')
     print('Question 1: ')
     print('The most frequent digit is 0.')
-    print('------------------------------------------')
     print('Question 2: ')
     print('The least frequent digit is 2.')
-    print('Question 3: Errors are calculated as an absolute error, not a percentage error.')
+    print('Question 3: Errors are calculated as an absolute error, not a percentage error. Multiply by 100 to get percentage error')
+    print('Calculations are for all 4 years')
     print('(a) Max Absolute Error')
     print(max_absolute_error(actual_vector_percentages, prediction_vector))
     print('(b) Median Absolute Error')
@@ -126,6 +151,8 @@ def main():
     print(mean_absolute_error(actual_vector_percentages, prediction_vector))
     print('(d) Root Mean Squared Error')
     print(root_mean_squared_error(actual_vector_percentages, prediction_vector))
+    print('Calculations for each individual year is listed below')
+    print(create_table_by_years(df, 2014, 2018))
 
 
 if __name__ == "__main__":

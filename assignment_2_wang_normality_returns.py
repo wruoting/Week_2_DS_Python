@@ -5,7 +5,7 @@
 from pandas_datareader import data as web
 import os
 import math
-import numpy as np 
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
@@ -23,8 +23,8 @@ def number_of_days_positive_negative_returns(df, year):
     """
     year = str(year)
     # Return is calculated as a percentage, eg. 0.3 -> 0.3%
-    start_date=year + '-01-01'; 
-    end_date=year + '-12-31'
+    start_date = year + '-01-01'
+    end_date = year + '-12-31'
     df_returns = df.loc[((df['Date'] >= start_date) & (df['Date'] <= end_date))].copy()
     df_returns['Return'] = df['Return'] * 100
     returns_list = df_returns['Return']
@@ -46,8 +46,8 @@ def create_daily_returns(df, year):
     # Calculate average daily return from a year of data, mu
     year = str(year)
     # Return is calculated as a percentage, eg. 0.3 -> 0.3%
-    start_date=year + '-01-01'; 
-    end_date=year + '-12-31'
+    start_date = year + '-01-01'
+    end_date = year + '-12-31'
     df_returns = df.loc[(df['Date'] >= start_date) & (df['Date'] <= end_date)].copy()
     df_returns['Return'] = df['Return'] * 100
 
@@ -64,17 +64,18 @@ def create_daily_returns(df, year):
     table = {'Year': year, 'Trading Days': [total_days], 'mu': [mean], '%% days < mu': [percent_less_than_mean], '%% days > mu': [percent_greater_than_mean]}
     return pd.DataFrame(data=table)
 
+
 def create_daily_returns_with_std_deviation(df, year):
     """
     df: pd dataframe. Data of interest
     year: int. The year of calculating positive and negative returns
-    returns: a df with the following columns: year | trading days |  mu | sigma | % days < mu - 2 * sigma | % days > mu - 2 * sigma
+    returns: a df with the following columns: year | trading days |  mu | sigma | % days < mu - 2 * sigma | % days > mu + 2 * sigma
     """
     # Calculate average daily return from a year of data, mu
     year = str(year)
     # Return is calculated as a percentage, eg. 0.3 -> 0.3%
-    start_date=year + '-01-01'; 
-    end_date=year + '-12-31'
+    start_date = year + '-01-01'
+    end_date = year + '-12-31'
     df_returns = df.loc[(df['Date'] >= start_date) & (df['Date'] <= end_date)].copy()
     df_returns['Return'] = df['Return'] * 100
 
@@ -125,12 +126,13 @@ def main():
     for year in years:
         df_q3 = df_q3.append(create_daily_returns_with_std_deviation(df, year))
     print(df_q3)
-    print('We expect that given a 2 tail standard deviation calculation, 2 standard deviations from the mean would yield about 2.5% per tail. The calculation shown above ')
+    print('We expect that given a 2 tail normal distribution standard deviation calculation, 2 standard deviations from the mean would yield about 2.5% per tail. The calculation shown above ')
     print('indicates that this is not the case. Each year has a significantly different percentages in its tails, usually with more in its left tail than its right tail. ')
     print('This suggests that there are significantly more "really bad trading days" than "really good trading days" indicating that bigger drops occur more frequently than ')
     print('bigger gains. On years with a high standard deviation of daily returns (eg. more volatile), namely 2015, 2016, and 2018, there is a significantly higher percentage of bad trading days ')
     print('compared to good ones: 3.17% vs 1.98%, 3.57% vs 0.79%, and 1.99% vs 0.8%. On years with high positive average returns, namely 2017, there is a higher percentage of "really good trading days" than "really bad trading days", but not by as much ')
     print('as the converse difference in 2015, 2016, and 2018. It seems as though generally, there are a higher percentage of big drops than big gains overall, and this is exacerbated by increased volatility (sigma) which deviates with majorly bullish years.')
+
 
 if __name__ == "__main__":
     main()
